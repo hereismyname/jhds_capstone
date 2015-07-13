@@ -1,0 +1,36 @@
+---
+title: "JHDS Capstone: Import & Processing"
+author: "Andrew Moore"
+date: "July 12, 2015"
+output: html_document
+---
+
+# Data import & sampling
+
+### Set up directories
+
+```{r set up directories}
+if (file.exists("../working_sets") == FALSE) dir.create("../working_sets")
+if (file.exists("../working_sets/cv") == FALSE) dir.create("../working_sets/cv")
+if (file.exists("../working_sets/train") == FALSE) dir.create("../working_sets/train")
+```
+
+### Define sampling function
+
+```{r define sampling function}
+sampleRows <- function (path, exploreFile, cvFile, p = .4) {
+    
+    file <- readLines(path, skipNul = TRUE) ## exclude NULL rows
+    
+    keep <- rbinom(n = length(file), size = 1, prob = p)
+    
+    efile <- file[keep]
+    cvfile <- file[-keep]
+    
+    write.table(efile, file = exploreFile, row.names = FALSE)
+    write.table(cvFile, file = cvfile, row.names = FALSE)
+}
+```
+
+```{r read twitter}
+```
