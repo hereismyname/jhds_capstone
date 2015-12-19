@@ -17,8 +17,8 @@ if (file.exists("../working_sets/train") == FALSE) dir.create("../working_sets/t
 
 ### Define sampling function
 
-```{r define sampling function}
-sampleRows <- function (path, exploreFile, cvFile, p = .4) {
+```{r define sampling function, eval = FALSE}
+sampleRows <- function(path, exploreFile, cvFile, p = .4) {
     
     file <- readLines(path, skipNul = TRUE) ## exclude NULL rows
     
@@ -32,5 +32,38 @@ sampleRows <- function (path, exploreFile, cvFile, p = .4) {
 }
 ```
 
-```{r read twitter}
+```{r quiz-1}
+# how long is the twitter file?
+readLines("../final/en_US/en_US.twitter.txt", skipNul = TRUE) %>% length()
+
+# how large is the blog file?
+file.info("../final/en_US/en_US.blogs.txt")$size / 1000000
+
+# who's talking about biostats?
+tweet <- readLines("../final/en_US/en_US.twitter.txt", skipNul = TRUE)
+tweet[grepl("biostats", tweet)]
+
+# love vs hate
+love <- tweet[grepl("love", tweet, fixed = TRUE)]
+hate <- tweet[grepl("hate", tweet, fixed = TRUE)]
+
+length(love) / length(hate)
+
+# idiosyncracy
+tweet[grep("A computer once beat me at chess, but it was no match for me at kickboxing", tweet)] %>% length()
+
+# who's the longest?
+blog <- readLines("../final/en_US/en_US.blogs.txt", skipNul = TRUE)
+
+news <- readLines("../final/en_US/en_US.news.txt", skipNul = TRUE)
+
+chars_blog <- nchar(blog)
+max(chars_blog)
+
+chars_news <- nchar(news)
+max(chars_news)
 ```
+
+```{r set up samples}
+set.seed(22832)
+
