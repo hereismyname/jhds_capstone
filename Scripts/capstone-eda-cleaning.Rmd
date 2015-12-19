@@ -54,7 +54,8 @@ library(quanteda)
 newscorp <- corpus(news)
 newsdfm  <- dfm(
   newscorp,
-  ignoredFeatures = stopwords("english")
+  ignoredFeatures = stopwords("english"),
+  ngrams = 1:3
 )
 ```
 
@@ -63,3 +64,17 @@ tokens        <- tokenize(tolower(news), removePunct = TRUE)
 tokens_nostop <- removeFeatures(tokens, stopwords("english"))
 tokens_ngrams <- ngrams(tokens_nostop, n = 1:3)
 ```
+
+```{r}
+newscorp   <- corpus(news)
+
+newsdfm <- newscorp %>% 
+  toLower() %>% 
+  tokenize(removePunct = TRUE, removeDigits = TRUE, removeURL = TRUE,
+           ngrams = 1:3) %>% 
+  # stop words might be useful, if you're looking at common phrases in english?
+  removeFeatures(stopwords("english")) %>% 
+  dfm()
+```
+
+I can pretend that this document-feature-matrix contains a representative sample of all the 2-3grams in English.
