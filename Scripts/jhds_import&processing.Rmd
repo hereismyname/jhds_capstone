@@ -65,5 +65,15 @@ max(chars_news)
 ```
 
 ```{r set up samples}
-set.seed(22832)
+set.seed(1261992)
 
+my_tweets <- sample(tweet, 200000)
+my_blogs  <- sample(blog, 200000)
+my_news   <- sample(news, 200000)
+
+saveRDS(my_tweets, "tweets.Rds")
+saveRDS(my_blogs, "blogs.Rds")
+saveRDS(my_news, "news.Rds")
+```
+
+Thinking that I'll just use these subsets to build models in addition to doing EDA. Not sure how much time fitting a model will take, and want to be effecient. I can always just take a new random sample.
