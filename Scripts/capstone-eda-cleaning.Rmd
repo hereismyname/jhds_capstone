@@ -1,0 +1,65 @@
+---
+title: 'Capstone: EDA & Cleaning'
+author: "AM"
+date: "December 18, 2015"
+output: html_document
+---
+
+### General notes
+
+***Profanity***
+  - I think I'll just clip 7 words
+  - https://en.wikipedia.org/wiki/Seven_dirty_words
+  
+***Libraries?***
+  - `tm`
+  - `quanteda`?
+      - this guy is built on C++
+      - should be fast
+  
+
+```{r opts, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
+```
+
+```{r read}
+news <- readRDS("../samples/news.Rds")
+```
+
+```{r howmany}
+HowMany <- function(search, file, pct = TRUE) {
+  if (pct) { 
+    (length(grep(search, file)) / length(file)) * 100
+  } else {
+    length(grep(search, file))
+  }
+}
+
+# abbreviations
+HowMany("Dr.", news)
+HowMany("Mr.", news)
+HowMany("Mrs.", news)
+
+# punct
+HowMany("\\.", news)
+HowMany("!", news)
+HowMany("?", news)
+HowMany("-", news)
+HowMany(",", news)
+```
+
+```{r quanteda}
+library(quanteda)
+
+newscorp <- corpus(news)
+newsdfm  <- dfm(
+  newscorp,
+  ignoredFeatures = stopwords("english")
+)
+```
+
+```{r try-tokenizing}
+tokens        <- tokenize(tolower(news), removePunct = TRUE)
+tokens_nostop <- removeFeatures(tokens, stopwords("english"))
+tokens_ngrams <- ngrams(tokens_nostop, n = 1:3)
+```
