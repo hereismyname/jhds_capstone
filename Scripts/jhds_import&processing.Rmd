@@ -5,32 +5,7 @@ date: "July 12, 2015"
 output: html_document
 ---
 
-# Data import & sampling
-
-### Set up directories
-
-```{r set up directories}
-if (file.exists("../working_sets") == FALSE) dir.create("../working_sets")
-if (file.exists("../working_sets/cv") == FALSE) dir.create("../working_sets/cv")
-if (file.exists("../working_sets/train") == FALSE) dir.create("../working_sets/train")
-```
-
-### Define sampling function
-
-```{r define sampling function, eval = FALSE}
-sampleRows <- function(path, exploreFile, cvFile, p = .4) {
-    
-    file <- readLines(path, skipNul = TRUE) ## exclude NULL rows
-    
-    keep <- rbinom(n = length(file), size = 1, prob = p)
-    
-    efile <- file[keep]
-    cvfile <- file[-keep]
-    
-    write.table(efile, file = exploreFile, row.names = FALSE)
-    write.table(cvFile, file = cvfile, row.names = FALSE)
-}
-```
+## Quiz 1
 
 ```{r quiz-1}
 # how long is the twitter file?
@@ -71,9 +46,9 @@ my_tweets <- sample(tweet, 200000)
 my_blogs  <- sample(blog, 200000)
 my_news   <- sample(news, 200000)
 
-saveRDS(my_tweets, "tweets.Rds")
-saveRDS(my_blogs, "blogs.Rds")
-saveRDS(my_news, "news.Rds")
+saveRDS(my_tweets, "../samples/tweets.Rds")
+saveRDS(my_blogs, "../samples/blogs.Rds")
+saveRDS(my_news, "../samples/news.Rds")
 ```
 
 Thinking that I'll just use these subsets to build models in addition to doing EDA. Not sure how much time fitting a model will take, and want to be effecient. I can always just take a new random sample.
