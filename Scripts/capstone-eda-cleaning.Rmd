@@ -22,7 +22,7 @@ output: html_document
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
 ```
 
-```{r read}
+```{r read, eval = FALSE}
 news   <- readRDS("../samples/news.Rds")
 blogs  <- readRDS("../samples/blogs.Rds")
 tweets <- readRDS("../samples/tweets.Rds")
@@ -52,7 +52,7 @@ HowMany("-", news)
 HowMany(",", news)
 ```
 
-```{r news-dfm}
+```{r news-dfm, eval = FALSE}
 # leaving in stopwords for now-- they are probably common if the goal is to predict
 # text that a user wants to type...
 
@@ -74,7 +74,6 @@ alldfm <- dfm(
   allcorp,
   ngrams = 1:3
 )
-
 ```
 
 
@@ -87,15 +86,17 @@ freq <- colSums(alldfm)
 freq <- data.frame(count = freq) %>% add_rownames(var = "string") %>% tbl_df()
 freq <- arrange(freq, desc(count))
 saveRDS(freq, file = "../samples/allfreq.Rds")
+```
 
+```{r flags}
 # create flags for unigrams, bigrams, & trigrams, etc.
 freq <- freq %>% mutate(
   is_unigram = ifelse(str_count(string, "_") == 0, TRUE, FALSE),
   is_bigram  = ifelse(str_count(string, "_") == 1, TRUE, FALSE),
-  is_trigram = ifelse(str_count(string, "_") == 2, TRUE, FALSE),
-  is_qgram   = ifelse(str_count(string, "_") == 3, TRUE, FALSE)
+  is_trigram = ifelse(str_count(string, "_") == 2, TRUE, FALSE)
 )
 ```
+
 
 ```{r plots}
 library(ggplot2)
