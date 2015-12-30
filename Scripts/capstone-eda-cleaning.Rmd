@@ -1,28 +1,28 @@
 ---
 title: 'Capstone: EDA & Cleaning'
-author: "AM"
-date: "December 18, 2015"
+date: '`Sys.Date()`'
 output: html_document
 ---
 
+```{r notes, eval = FALSE}
 ### General notes
 
-***Profanity***
-  - I think I'll just clip 7 words
-  - https://en.wikipedia.org/wiki/Seven_dirty_words
-  
-***Libraries?***
-  - `tm`
-  - `quanteda`?
-      - this guy is built on C++
-      - should be fast
-  
+# ***Profanity***
+#   - I think I'll just clip 7 words
+#   - https://en.wikipedia.org/wiki/Seven_dirty_words
+#   
+# ***Libraries?***
+#   - `tm`
+#   - `quanteda`?
+#       - this guy is built on C++
+#       - should be fast
+```
 
 ```{r opts, include = FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
 ```
 
-```{r read, eval = FALSE}
+```{r read, eval = FALSE, echo = TRUE}
 news   <- readRDS("../samples/news.Rds")
 blogs  <- readRDS("../samples/blogs.Rds")
 tweets <- readRDS("../samples/tweets.Rds")
@@ -30,43 +30,7 @@ tweets <- readRDS("../samples/tweets.Rds")
 all <- c(news, blogs, tweets)
 ```
 
-```{r howmany, eval = FALSE}
-HowMany <- function(search, file, pct = TRUE) {
-  if (pct) { 
-    (length(grep(search, file)) / length(file)) * 100
-  } else {
-    length(grep(search, file))
-  }
-}
-
-# abbreviations
-HowMany("Dr.", news)
-HowMany("Mr.", news)
-HowMany("Mrs.", news)
-
-# punct
-HowMany("\\.", news)
-HowMany("!", news)
-HowMany("?", news)
-HowMany("-", news)
-HowMany(",", news)
-```
-
-```{r news-dfm, eval = FALSE}
-# leaving in stopwords for now-- they are probably common if the goal is to predict
-# text that a user wants to type...
-
-library(quanteda)
-
-newscorp <- corpus(news)
-newsdfm  <- dfm(
-  newscorp,
-  # ignoredFeatures = stopwords("english"),
-  ngrams = 1:3
-)
-```
-
-```{r all-dfm}
+```{r all-dfm, eval = FALSE, echo = TRUE}
 library(quanteda)
 
 allcorp <- corpus(all)
@@ -76,8 +40,7 @@ alldfm <- dfm(
 )
 ```
 
-
-```{r ngram-eda}
+```{r ngram-eda, echo = TRUE, eval = FALSE}
 library(dplyr)
 library(stringr)
 
@@ -85,10 +48,17 @@ library(stringr)
 freq <- colSums(alldfm)
 freq <- data.frame(count = freq) %>% add_rownames(var = "string") %>% tbl_df()
 freq <- arrange(freq, desc(count))
+```
+
+```{r save, eval = FALSE}
 saveRDS(freq, file = "../samples/allfreq.Rds")
 ```
 
-```{r flags}
+```{r load}
+freq <- readRDS("../samples/allfreq.Rds")
+```
+
+```{r flags, echo = TRUE}
 # create flags for unigrams, bigrams, & trigrams, etc.
 freq <- freq %>% mutate(
   is_unigram = ifelse(str_count(string, "_") == 0, TRUE, FALSE),
@@ -96,7 +66,6 @@ freq <- freq %>% mutate(
   is_trigram = ifelse(str_count(string, "_") == 2, TRUE, FALSE)
 )
 ```
-
 
 ```{r plots}
 library(ggplot2)
@@ -120,15 +89,57 @@ freq %>%
   labs(x = "string", y = "count")
 ```
 
-### Parked Code
+```{r howmany, eval = FALSE}
+### PARKED CODE
+
+HowMany <- function(search, file, pct = TRUE) {
+  if (pct) { 
+    (length(grep(search, file)) / length(file)) * 100
+  } else {
+    length(grep(search, file))
+  }
+}
+
+# abbreviations
+HowMany("Dr.", news)
+HowMany("Mr.", news)
+HowMany("Mrs.", news)
+
+# punct
+HowMany("\\.", news)
+HowMany("!", news)
+HowMany("?", news)
+HowMany("-", news)
+HowMany(",", news)
+```
+
+```{r news-dfm, eval = FALSE}
+### PARKED CODE
+
+# leaving in stopwords for now-- they are probably common if the goal is to predict
+# text that a user wants to type...
+
+library(quanteda)
+
+newscorp <- corpus(news)
+newsdfm  <- dfm(
+  newscorp,
+  # ignoredFeatures = stopwords("english"),
+  ngrams = 1:3
+)
+```
 
 ```{r try-tokenizing, eval = FALSE}
+### PARKED CODE
+
 tokens        <- tokenize(tolower(news), removePunct = TRUE)
 tokens_nostop <- removeFeatures(tokens, stopwords("english"))
 tokens_ngrams <- ngrams(tokens_nostop, n = 1:3)
 ```
 
 ```{r, eval = FALSE}
+### PARKED CODE
+
 newscorp   <- corpus(news)
 
 newsdfm <- newscorp %>% 
@@ -139,5 +150,3 @@ newsdfm <- newscorp %>%
   removeFeatures(stopwords("english")) %>% 
   dfm()
 ```
-
-I can pretend that this document-feature-matrix contains a representative sample of all the 2-3grams in English.
