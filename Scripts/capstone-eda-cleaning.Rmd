@@ -22,6 +22,30 @@ output: html_document
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
 ```
 
+## Sample Construction
+
+Begin by sampling 200,000 documents from each source. The files are then saved as `.Rds` files, for later import & use. 
+
+```{r sample-dir, eval = FALSE}
+if (!file.exists("../samples")) dir.create("../samples")
+```
+
+```{r set up samples, echo = TRUE, eval = FALSE}
+set.seed(12692)
+
+my_tweets <- sample(tweet, 200000)
+my_blogs  <- sample(blog, 200000)
+my_news   <- sample(news, 200000)
+
+saveRDS(my_tweets, "../samples/tweets.Rds")
+saveRDS(my_blogs, "../samples/blogs.Rds")
+saveRDS(my_news, "../samples/news.Rds")
+```
+
+## Data Import & Basic Descriptives
+
+Each of the files are read in, and then bound as a single vector for modeling purposes.
+
 ```{r read, eval = FALSE, echo = TRUE}
 news   <- readRDS("../samples/news.Rds")
 blogs  <- readRDS("../samples/blogs.Rds")
